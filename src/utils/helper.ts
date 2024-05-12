@@ -12,8 +12,16 @@ export const hashPassword = async (password: string) => {
 
 export const validate = (req: Request, res: Response, next: any) => {
 	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.json({ errors: errors.array() });
-	}
+	if (!errors.isEmpty()) return errorResponse(res, errors.array(), "Validation error");
+
 	next();
+}
+
+export const errorResponse = (
+	res: Response,
+	data: Array<any> = [],
+	message: string = "",
+	status: number = 400
+): Response => {
+	return res.status(status).json({ message, errors: data });
 }

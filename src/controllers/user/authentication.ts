@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { hashPassword } from "../utils/helper";
+import { hashPassword } from "../../utils/helper";
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient();
