@@ -1,9 +1,19 @@
 import { Request, Response } from "express";
 import { hashPassword } from "../utils/helper";
+import { PrismaClient } from '@prisma/client'
 
-export const register = (req: Request, res: Response) => {
-    const { email, password } = req.body;
-    const hashedPassword = hashPassword(password);
+const prisma = new PrismaClient();
 
-    res.send('Register route');
+export const register = async (req: Request, res: Response) => {
+    const { name, email, password } = req.body;
+    const hashedPassword = await hashPassword(password);
+    const user = await prisma.user.create({
+        data: {
+            name: name,
+            email: email,
+            password: hashedPassword
+        }
+    })
+
+    res.send(user);
 }
