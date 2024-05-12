@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
-import api from './routes/api';
+import apiRouter from './routes/api';
 import multer from 'multer';
+import expressListEndpoints from 'express-list-endpoints';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,8 +15,10 @@ app.post('/testing', function (req: Request, res: Response) { return res.send('P
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, TypeScript Express!');
 });
-app.use('/api', api);
+app.use('/api', apiRouter);
+
+app.get('/end-points', (req, res) => res.send(expressListEndpoints(app)))
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
-});;
+});
