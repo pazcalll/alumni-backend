@@ -64,3 +64,10 @@ export const dataResponseJson = (
 		data: data
 	});
 }
+
+export const prettyEndpoints = (endpoints: any) => {
+	console.log('Available endpoints:');
+	endpoints.forEach((route: any) => {
+		console.log(`  ${route.methods.join(', ')}\t${route.path}`);
+	});
+}
