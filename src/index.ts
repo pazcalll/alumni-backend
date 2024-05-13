@@ -14,6 +14,6 @@ app.post('/testing', function (req: Request, res: Response) { return res.send('P
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, TypeScript Express!');
 });
-app.use('/api', apiRouter);
+app.use('/api', apiRouter.export());
 
 export {app, port};

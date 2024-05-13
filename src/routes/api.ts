@@ -1,12 +1,20 @@
-import express, { Request, Response } from 'express';
 import { register } from '../controllers/user/authentication';
 import { registerValidation } from '../requests/user/registration';
 import { validate } from '../utils/helper';
-import adminRouter from './admin/index';
+import RouteGroup from 'express-route-grouping';
+import { loginValidation } from '../requests/login';
+import { login as adminLogin } from '../controllers/admin/authentication';
+import { Request, Response } from 'express';
 
-const apiRouter = express.Router();
+const root = new RouteGroup();
 
-apiRouter.post('/register', registerValidation, validate, register)
-apiRouter.use('/admin', adminRouter)
+root.group('/admin', route => {
+    route.post('/login', loginValidation, validate, adminLogin);
+    route.post('/register', registerValidation, validate, register);
+    route.group('/user', user => {
+        user.get('/requests', (req: Request, res: Response) => res.send('Registration requests'));
+        user.put('/approve-registration', (req: Request, res: Response) => res.send('Approve registration'));
+    });
+});
 
-export default apiRouter;
+export default root;
