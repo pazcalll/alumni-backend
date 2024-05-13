@@ -30,5 +30,9 @@ export const login = async (req: Request, res: Response) => {
         "access_token": accessToken
     }
 
-    dataResponseJson(res, data, "Login successful", 200);
+    return dataResponseJson(res, data, "Login successful", 200);
+}
+
+export const invalidateToken = async (req: Request, res: Response) => {
+    return dataResponseJson(res, [], "Token invalidated", 200);
 }
