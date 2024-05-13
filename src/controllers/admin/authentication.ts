@@ -26,7 +26,7 @@ export const login = async (req: Request, res: Response) => {
     const accessToken = jwt.sign({ email: admin.email, name: admin.name }, process.env.JWT_SECRET || "", { expiresIn: 3600 });
 
     const data = {
-        "expires_in": 3600 + "s",
+        "expires_in": 3600,
         "access_token": accessToken
     }
 

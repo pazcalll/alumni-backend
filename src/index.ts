@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import apiRouter from './routes/api';
 import multer from 'multer';
+import { verifyToken } from './middlewares/token-verification';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,6 +15,6 @@ app.post('/testing', function (req: Request, res: Response) { return res.send('P
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, TypeScript Express!');
 });
-app.use('/api', apiRouter.export());
+app.use('/api', verifyToken, apiRouter.export());
 
 export {app, port};
