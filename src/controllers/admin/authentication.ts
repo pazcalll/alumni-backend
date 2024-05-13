@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
-import { hashPassword } from "../../utils/helper";
+import { dataResponseJson, errorResponseJson } from "../../utils/helper";
 import { PrismaClient } from '@prisma/client'
 import * as bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const prisma = new PrismaClient();
 
@@ -13,15 +17,18 @@ export const login = async (req: Request, res: Response) => {
         }
     })
 
-    if (!admin) {
-        return res.status(404).json({ message: 'User not found' });
-    }
+    if (!admin) return errorResponseJson(res, [], 'Data not found', 400);
 
     const isMatch = await bcrypt.compare(password, admin.password);
 
-    if (!isMatch) {
-        return res.status(400).json({ message: 'Invalid credentials' });
+    if (!isMatch) return errorResponseJson(res, [], 'Invalid credentials', 400);
+
+    const accessToken = jwt.sign({ email: admin.email, name: admin.name }, process.env.JWT_SECRET || "", { expiresIn: 3600 });
+
+    const data = {
+        "expires_in": 3600 + "s",
+        "access_token": accessToken
     }
 
-    res.send(admin);
+    dataResponseJson(res, data, "Login successful", 200);
 }
