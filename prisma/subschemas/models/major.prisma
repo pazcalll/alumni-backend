@@ -1,0 +1,10 @@
+model Major {
+  id         Int          @id @default(autoincrement())
+  name       String
+  degree     String
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+  userDetail UserDetail[]
+
+  @@map("majors")
+}

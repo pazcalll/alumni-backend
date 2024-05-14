@@ -18,11 +18,12 @@ root.group('/user', route => {
     route.post('/register', registerValidation, validate, register);
 });
 
-user.use('/', verifyToken);
-user.get('/requests', (req: Request, res: Response) => res.send(req.model));
-user.put('/approve-registration', (req: Request, res: Response) => res.send('Approve registration'));
 root.group('/admin', route => {
     route.post('/login', loginValidation, validate, adminLogin);
+
+    user.use('/', verifyToken);
+    user.get('/requests', (req: Request, res: Response) => res.send(req.model));
+    user.put('/approve-registration', (req: Request, res: Response) => res.send('Approve registration'));
     route.use('/user', user);
 });
 

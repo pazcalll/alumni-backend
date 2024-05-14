@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+//🧩Don't Edit this file.✨Generated in Wed May 15 2024 00:49:53 GMT+0700 (Western Indonesia Time)✨
 
 generator client {
   provider = "prisma-client-js"
@@ -11,18 +7,6 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DB_URL")
-}
-
-model User {
-  id         Int          @id @default(autoincrement())
-  email      String       @unique
-  name       String
-  password   String
-  createdAt  DateTime     @default(now()) @map("created_at")
-  updatedAt  DateTime     @updatedAt @map("updated_at")
-  UserDetail UserDetail[]
-
-  @@map("users")
 }
 
 model Admin {
@@ -42,15 +26,27 @@ model Major {
   degree     String
   createdAt  DateTime     @default(now()) @map("created_at")
   updatedAt  DateTime     @updatedAt @map("updated_at")
-  UserDetail UserDetail[]
+  userDetail UserDetail[]
 
   @@map("majors")
+}
+
+model User {
+  id         Int         @id @default(autoincrement())
+  email      String      @unique
+  name       String
+  password   String
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+  userDetail UserDetail?
+
+  @@map("users")
 }
 
 model UserDetail {
   id             Int      @id @default(autoincrement())
   user           User     @relation(fields: [userId], references: [id])
-  userId         Int      @map("user_id")
+  userId         Int      @unique @map("user_id")
   major          Major    @relation(fields: [majorId], references: [id])
   majorId        Int      @map("major_id")
   phone          String

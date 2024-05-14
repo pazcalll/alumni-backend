@@ -9,6 +9,7 @@
     "db:migrate": "prisma migrate dev --name init",
     "db:generate": "prisma generate",
     "db:seed": "ts-node src/seeders/index.ts",
+    "db:make": "prisma-multischema && prisma migrate deploy",
     "route:list": "ts-node src/utils/route-list.ts",
     "generate:secret": "ts-node src/utils/generate-jwt-secret.ts",
     "build": "tsc"
@@ -36,6 +37,7 @@
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
-    "node": "^20.12.1"
+    "node": "^20.12.1",
+    "prisma-multischema": "^1.1.4"
   }
 }
