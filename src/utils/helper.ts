@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
 export const hashPassword = async (password: string) => {
@@ -104,4 +104,33 @@ export const prismaPagination = (page: number | null | any = 1, take: number | n
 		skip: (actualPage - 1) * actualTake,
 		take: actualTake
 	}
+}
+
+export const xssProtection = (req: Request, res: Response, next: NextFunction) => {
+	const escapeHTML = (unsafeText: string | undefined): string | undefined => {
+		if (!unsafeText) {
+			return unsafeText;
+		}
+
+		return unsafeText
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#039;");
+	}
+
+	for (let queryParam in req.query) {
+		if (typeof req.query[queryParam] === 'string') {
+			req.query[queryParam] = escapeHTML(String(req.query[queryParam]));
+		}
+	}
+
+	for (let bodyField in req.body) {
+		if (typeof req.body[bodyField] === 'string') {
+			req.body[bodyField] = escapeHTML(String(req.body[bodyField]));
+		}
+	}
+
+	next();
 }
