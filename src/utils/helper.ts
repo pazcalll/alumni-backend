@@ -41,6 +41,27 @@ export const errorResponseJson = (
 	});
 }
 
+export const dataResponsePagination = (
+	res: Response,
+	data: Array<any> = [],
+	page: number | null | any = 1,
+	limit: number | null | any = 10,
+	message: string = "",
+): Response => {
+	const defaultPage = 1; // Default page
+	const defaultTake = 10; // Default limit
+
+	if (page === null || typeof page != 'number') page = defaultPage;
+	if (limit === null || typeof limit != 'number') limit = defaultTake;
+
+	return res.json({
+		message: message,
+		data: data,
+		page: page,
+		limit: limit
+	});
+}
+
 export const dataResponseArray = (
 	res: Response,
 	data: Array<any> = [],
@@ -70,4 +91,17 @@ export const prettyEndpoints = (endpoints: any) => {
 	endpoints.forEach((route: any) => {
 		console.log(`  ${route.methods.join(', ')}\t${route.path}`);
 	});
+}
+
+export const prismaPagination = (page: number | null | any = 1, take: number | null | any = 10): object => {
+	const defaultPage = 1; // Default page
+	const defaultTake = 10; // Default limit
+
+	const actualPage = (page === null || typeof page != 'number') ? defaultPage : page;
+	const actualTake = (take === null || typeof take != 'number') ? defaultTake : take;
+
+	return {
+		skip: (actualPage - 1) * actualTake,
+		take: actualTake
+	}
 }
