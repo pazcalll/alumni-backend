@@ -4,7 +4,7 @@ model UserDetail {
   userId         Int      @unique @map("user_id")
   major          Major    @relation(fields: [majorId], references: [id])
   majorId        Int      @map("major_id")
-  phone          String
+  mobile         String
   graduationDate DateTime @map("graduation_date")
   address        String
   lat            String

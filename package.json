@@ -9,7 +9,7 @@
     "db:migrate": "prisma migrate dev --name init",
     "db:generate": "prisma generate",
     "db:seed": "ts-node src/seeders/index.ts",
-    "db:make": "prisma-multischema && prisma migrate deploy",
+    "db:make": "prisma-multischema && prisma migrate dev --name init",
     "route:list": "ts-node src/utils/route-list.ts",
     "generate:secret": "ts-node src/utils/generate-jwt-secret.ts",
     "build": "tsc"
