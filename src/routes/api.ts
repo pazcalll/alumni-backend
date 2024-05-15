@@ -9,23 +9,23 @@ import { verifyToken } from '../middlewares/token-verification';
 import { registrationRequests } from '../controllers/admin/user';
 
 const root = new RouteGroup();
-const user = express.Router();
 
 interface Request extends ExpressRequest {
     model?: any; // Add your model attribute here
 }
 
 root.group('/user', route => {
-    route.post('/register', registerValidation, validate, register);
+    route.post('/registration', registerValidation, validate, register);
 });
 
-root.group('/admin', route => {
-    route.post('/login', loginValidation, validate, adminLogin);
+root.group('/admin', adminRoute => {
+    adminRoute.post('/login', loginValidation, validate, adminLogin);
 
-    user.use('/', verifyToken);
-    user.get('/requests', registrationRequests);
-    user.put('/approve-registration', (req: Request, res: Response) => res.send('Approve registration'));
-    route.use('/user', user);
+    adminRoute.group('/user', adminUserRoute => {
+        adminUserRoute.use('/', verifyToken);
+        adminUserRoute.get('/requests', registrationRequests);
+        adminUserRoute.put('/approve-registration', (req: Request, res: Response) => res.send('Approve registration'));
+    })
 });
 
 export default root;

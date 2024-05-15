@@ -18,7 +18,7 @@ export const registerValidation = [
         .isLength({ min: 5, max: 16 }).withMessage('Must be between 5-16 characters')
         .notEmpty().withMessage("Must not be empty"),
 
-    body('confirm_password')
+    body('passwordConfirmation')
         .custom((value, { req }) => {
             if (value !== req.body.password) {
                 throw new Error('Password confirmation does not match password');
@@ -28,5 +28,25 @@ export const registerValidation = [
         .notEmpty().withMessage("Must not be empty"),
 
     body('name')
+        .notEmpty().withMessage("Must not be empty"),
+
+    body('mobile')
+        .notEmpty().withMessage("Must not be empty")
+        .isNumeric().withMessage("Must be numeric")
+        .isLength({ min: 10, max: 16 }).withMessage('At least 10 characters'),
+
+    body('address')
+        .notEmpty().withMessage("Must not be empty"),
+
+    body('graduationDate')
+        .notEmpty().withMessage("Must not be empty")
+        .isDate().withMessage("Must be date"),
+
+    body('lat')
+        .isNumeric().withMessage("Must be numeric")
+        .notEmpty().withMessage("Must not be empty"),
+
+    body('long')
+        .isNumeric().withMessage("Must be numeric")
         .notEmpty().withMessage("Must not be empty"),
 ]
