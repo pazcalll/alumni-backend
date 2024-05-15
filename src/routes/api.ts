@@ -6,7 +6,7 @@ import { loginValidation } from '../requests/login';
 import { login as adminLogin } from '../controllers/admin/authentication';
 import express, { Request as ExpressRequest, Response } from 'express';
 import { verifyToken } from '../middlewares/token-verification';
-import { registrationRequests } from '../controllers/admin/user';
+import { approveRegistration, registrationRequests } from '../controllers/admin/user';
 
 const root = new RouteGroup();
 
@@ -24,7 +24,7 @@ root.group('/admin', adminRoute => {
     adminRoute.group('/user', adminUserRoute => {
         adminUserRoute.use('/', verifyToken);
         adminUserRoute.get('/requests', registrationRequests);
-        adminUserRoute.put('/approve-registration', (req: Request, res: Response) => res.send('Approve registration'));
+        adminUserRoute.put('/approve-user-registration/:id?', approveRegistration);
     })
 });
 

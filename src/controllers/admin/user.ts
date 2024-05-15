@@ -1,9 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { dataResponsePagination, prismaPagination } from "../../utils/helper";
+import { dataResponseJson, dataResponsePagination, prismaPagination } from "../../utils/helper";
+import { userFields } from "../../utils/model-fields";
+
+const prisma = new PrismaClient();
 
 export const registrationRequests = async (req: Request, res: Response) => {
-    let requests = await (new PrismaClient()).user.findMany({
+    let requests = await prisma.user.findMany({
         ...prismaPagination(req.query.page, req.query.limit),
         where: {
             isApproved: false,
@@ -11,4 +14,19 @@ export const registrationRequests = async (req: Request, res: Response) => {
     });
 
     return dataResponsePagination(res, requests, req.query.page, req.query.limit);
+}
+
+export const approveRegistration = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    let user = await prisma.user.update({
+        where: {
+            id: id
+        },
+        data: {
+            isApproved: true
+        },
+        ...userFields
+    });
+
+    return dataResponseJson(res, user, "User approved successfully");
 }
