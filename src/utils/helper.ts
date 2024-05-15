@@ -76,7 +76,7 @@ export const dataResponseArray = (
 
 export const dataResponseJson = (
 	res: Response,
-	data: any = {},
+	data: object = {},
 	message: string = "",
 	status: number = 200
 ): Response => {
