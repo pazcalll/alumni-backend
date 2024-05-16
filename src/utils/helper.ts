@@ -1,6 +1,9 @@
 import * as bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
+import jwt from 'jsonwebtoken';
+import 'dotenv/config';
+import { Admin, User } from '@prisma/client';
 
 export const hashPassword = async (password: string) => {
 	const saltRounds = 10;

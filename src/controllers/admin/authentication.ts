@@ -16,23 +16,21 @@ export const login = async (req: Request, res: Response) => {
             email: email
         }
     })
-
     if (!admin) return errorResponseJson(res, [], 'Data not found', 400);
 
     const isMatch = await bcrypt.compare(password, admin.password);
-
     if (!isMatch) return errorResponseJson(res, [], 'Invalid credentials', 400);
 
-    const accessToken = jwt.sign({ email: admin.email, name: admin.name }, process.env.JWT_SECRET || "", { expiresIn: 3600 });
+    const { password: _, ...adminWithoutPassword } = admin;
 
+    const accessToken = jwt.sign(admin, process.env.JWT_SECRET || "", { expiresIn: 3600 });
     const data = {
-        "expires_in": 3600,
-        "access_token": accessToken
+        ...adminWithoutPassword,
+        token: {
+            "expires_in": 3600,
+            "access_token": accessToken
+        }
     }
 
     return dataResponseJson(res, data, "Login successful", 200);
-}
-
-export const invalidateToken = async (req: Request, res: Response) => {
-    return dataResponseJson(res, [], "Token invalidated", 200);
 }

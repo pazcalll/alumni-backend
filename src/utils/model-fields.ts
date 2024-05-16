@@ -11,3 +11,14 @@ export const userFields = {
         is_approved: true
     }
 }
+
+export const adminFields = {
+    select: {
+        id: true,
+        email: true,
+        password: false,
+        name: true,
+        created_at: true,
+        updated_at: true
+    }
+}
