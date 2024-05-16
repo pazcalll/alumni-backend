@@ -1,4 +1,4 @@
-import { register } from '../controllers/user/authentication';
+import { login as userLogin, register } from '../controllers/user/authentication';
 import { registerValidation } from '../requests/user/registration';
 import { validate } from '../utils/helper';
 import RouteGroup from 'express-route-grouping';
@@ -11,6 +11,7 @@ const root = new RouteGroup();
 
 root.group('/user', route => {
     route.post('/registration', registerValidation, validate, register);
+    route.post('/login', loginValidation, validate, userLogin);
 });
 
 root.group('/admin', adminRoute => {
