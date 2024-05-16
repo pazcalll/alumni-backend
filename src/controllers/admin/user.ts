@@ -7,13 +7,13 @@ const prisma = new PrismaClient();
 
 export const registrationRequests = async (req: Request, res: Response) => {
     let requests = await prisma.user.findMany({
-        ...prismaPagination(req.query.page, req.query.limit),
+        ...prismaPagination(Number(req.query.page), Number(req.query.limit)),
         where: {
             is_approved: false,
         }
     });
 
-    return dataResponsePagination(res, requests, req.query.page, req.query.limit);
+    return dataResponsePagination(res, requests, Number(req.query.page), Number(req.query.limit));
 }
 
 export const approveRegistration = async (req: Request, res: Response) => {

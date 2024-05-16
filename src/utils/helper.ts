@@ -47,15 +47,15 @@ export const errorResponseJson = (
 export const dataResponsePagination = (
 	res: Response,
 	data: Array<any> = [],
-	page: number | null | any = 1,
-	limit: number | null | any = 10,
+	page: number | null = 1,
+	limit: number | null = 10,
 	message: string = "",
 ): Response => {
 	const defaultPage = 1; // Default page
 	const defaultTake = 10; // Default limit
 
-	if (page === null || typeof page != 'number') page = defaultPage;
-	if (limit === null || typeof limit != 'number') limit = defaultTake;
+	if (page === null) page = defaultPage;
+	if (limit === null) limit = defaultTake;
 
 	return res.json({
 		message: message,
@@ -96,12 +96,12 @@ export const prettyEndpoints = (endpoints: any) => {
 	});
 }
 
-export const prismaPagination = (page: number | null | any = 1, take: number | null | any = 10): object => {
+export const prismaPagination = (page: number | null = 1, take: number | null = 10): object => {
 	const defaultPage = 1; // Default page
 	const defaultTake = 10; // Default limit
 
-	const actualPage = (page === null || typeof page != 'number') ? defaultPage : page;
-	const actualTake = (take === null || typeof take != 'number') ? defaultTake : take;
+	const actualPage = (page === null) ? defaultPage : page;
+	const actualTake = (take === null) ? defaultTake : take;
 
 	return {
 		skip: (actualPage - 1) * actualTake,
