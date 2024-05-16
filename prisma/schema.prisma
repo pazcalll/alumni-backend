@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Wed May 15 2024 01:46:34 GMT+0700 (Western Indonesia Time)✨
+//🧩Don't Edit this file.✨Generated in Thu May 16 2024 21:42:29 GMT+0700 (Western Indonesia Time)✨
 
 generator client {
   provider = "prisma-client-js"
@@ -10,12 +10,12 @@ datasource db {
 }
 
 model Admin {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  password  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  name       String
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
   @@map("admins")
 }
@@ -24,39 +24,39 @@ model Major {
   id         Int          @id @default(autoincrement())
   name       String
   degree     String
-  createdAt  DateTime     @default(now()) @map("created_at")
-  updatedAt  DateTime     @updatedAt @map("updated_at")
+  created_at DateTime     @default(now())
+  updated_at DateTime     @default(now())
   userDetail UserDetail[]
 
   @@map("majors")
 }
 
 model User {
-  id         Int         @id @default(autoincrement())
-  email      String      @unique
-  name       String
-  password   String
-  isApproved Boolean     @default(false) @map("is_approved")
-  createdAt  DateTime    @default(now()) @map("created_at")
-  updatedAt  DateTime    @updatedAt @map("updated_at")
-  userDetail UserDetail?
+  id          Int         @id @default(autoincrement())
+  email       String      @unique
+  name        String
+  password    String
+  is_approved Boolean     @default(false)
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @default(now())
+  userDetail  UserDetail?
 
   @@map("users")
 }
 
 model UserDetail {
-  id             Int      @id @default(autoincrement())
-  user           User     @relation(fields: [userId], references: [id])
-  userId         Int      @unique @map("user_id")
-  major          Major    @relation(fields: [majorId], references: [id])
-  majorId        Int      @map("major_id")
-  mobile         String
-  graduationDate DateTime @map("graduation_date")
-  address        String
-  lat            String
-  long           String
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+  id              Int      @id @default(autoincrement())
+  user            User     @relation(fields: [user_id], references: [id])
+  user_id         Int      @unique
+  major           Major    @relation(fields: [major_id], references: [id])
+  major_id        Int
+  mobile          String
+  graduation_date DateTime
+  address         String
+  lat             String
+  long            String
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now())
 
   @@map("user_details")
 }

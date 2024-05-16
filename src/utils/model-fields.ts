@@ -6,8 +6,8 @@ export const userFields = {
         email: true,
         password: false,
         name: true,
-        createdAt: true,
-        updatedAt: true,
-        isApproved: true
+        created_at: true,
+        updated_at: true,
+        is_approved: true
     }
 }

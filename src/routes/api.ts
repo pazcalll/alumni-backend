@@ -4,15 +4,10 @@ import { validate } from '../utils/helper';
 import RouteGroup from 'express-route-grouping';
 import { loginValidation } from '../requests/login';
 import { login as adminLogin } from '../controllers/admin/authentication';
-import express, { Request as ExpressRequest, Response } from 'express';
 import { verifyToken } from '../middlewares/token-verification';
 import { approveRegistration, registrationRequests } from '../controllers/admin/user';
 
 const root = new RouteGroup();
-
-interface Request extends ExpressRequest {
-    model?: any; // Add your model attribute here
-}
 
 root.group('/user', route => {
     route.post('/registration', registerValidation, validate, register);

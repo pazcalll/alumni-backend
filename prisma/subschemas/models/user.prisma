@@ -1,12 +1,12 @@
 model User {
-  id         Int         @id @default(autoincrement())
-  email      String      @unique
-  name       String
-  password   String
-  isApproved Boolean     @default(false) @map("is_approved")
-  createdAt  DateTime    @default(now()) @map("created_at")
-  updatedAt  DateTime    @updatedAt @map("updated_at")
-  userDetail UserDetail?
+  id          Int         @id @default(autoincrement())
+  email       String      @unique
+  name        String
+  password    String
+  is_approved Boolean     @default(false)
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @default(now())
+  userDetail  UserDetail?
 
   @@map("users")
 }

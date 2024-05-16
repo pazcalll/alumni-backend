@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { dataResponseJson, hashPassword } from "../../utils/helper";
 import { PrismaClient } from '@prisma/client'
+import { userFields } from "../../utils/model-fields";
 
 const prisma = new PrismaClient();
 
@@ -13,14 +14,7 @@ export const register = async (req: Request, res: Response) => {
             email: email,
             password: hashedPassword
         },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            createdAt: true,
-            updatedAt: true,
-            isApproved: true
-        }
+        ...userFields
     });
 
     dataResponseJson(res, user, "User registered successfully");
