@@ -3,6 +3,10 @@ import { dataResponseJson, errorResponseJson, hashPassword } from "../../utils/h
 import { PrismaClient } from '@prisma/client'
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { userFields } from "../../utils/model-fields";
+import { transporter } from "../../utils/mail";
+import fs from 'fs';
+import path from 'path';
 
 const prisma = new PrismaClient();
 
@@ -58,4 +62,29 @@ export const register = async (req: Request, res: Response) => {
     }
 
     dataResponseJson(res, data, "User registered successfully");
+}
+
+export const forgotPassword = async (req: Request, res: Response) => {
+    const { email } = req.body;
+    const user = await prisma.user.findFirst({
+        where: {
+            email: email
+        },
+        ...userFields
+    })
+    if (!user) return errorResponseJson(res, [], 'Data not found', 400);
+
+    let emailString = fs.readFileSync(path.resolve(__dirname, '../../mails/forgot-password.html'), 'utf8')
+        .replace(':link', `${process.env.APP_URL_FRONTEND}/reset-password?token=${user.id}`)
+
+    const mailData = {
+        from: process.env.MAIL_FROM_ADDRESS,
+        to: user.email,
+        subject: 'Reset Password Link',
+        html:  emailString,
+    };
+    transporter.sendMail(mailData).catch((err) => console.log('error', err))
+
+    // Send email with reset password link
+    return dataResponseJson(res, {}, "Reset password link sent to your email");
 }
