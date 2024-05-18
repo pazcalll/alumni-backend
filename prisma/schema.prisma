@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Thu May 16 2024 21:42:29 GMT+0700 (Western Indonesia Time)✨
+//🧩Don't Edit this file.✨Generated in Sat May 18 2024 17:46:29 GMT+0700 (Western Indonesia Time)✨
 
 generator client {
   provider = "prisma-client-js"
@@ -29,6 +29,15 @@ model Major {
   userDetail UserDetail[]
 
   @@map("majors")
+}
+
+model ResetPasswordToken {
+  id       Int    @id @default(autoincrement())
+  model_id Int
+  model    String
+  token    String
+
+  @@map("reset_password_tokens")
 }
 
 model User {

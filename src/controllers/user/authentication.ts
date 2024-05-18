@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { dataResponseJson, errorResponseJson, hashPassword } from "../../utils/helper";
+import { dataResponseJson, errorResponseJson, generateRandomString, hashPassword } from "../../utils/helper";
 import { PrismaClient } from '@prisma/client'
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -74,8 +74,46 @@ export const forgotPassword = async (req: Request, res: Response) => {
     })
     if (!user) return errorResponseJson(res, [], 'Data not found', 400);
 
+    let token = generateRandomString(10);
+
+    const isTokenExist = await prisma.resetPasswordToken.findFirst({
+        where: {
+            token: token,
+            model: 'users',
+            model_id: user.id
+        }
+    })
+
+    if (!isTokenExist) {
+        await prisma.resetPasswordToken.create({
+            data: {
+                token: token,
+                model: 'users',
+                model_id: user.id
+            }
+        });
+    } else {
+        token = generateRandomString(10);
+        let updateable = await prisma.resetPasswordToken.findFirst({
+            where: {
+                model: 'users',
+                model_id: user.id
+            }
+        })
+        if (!updateable) return errorResponseJson(res, [], 'Data not found', 400);
+
+        await prisma.resetPasswordToken.update({
+            where: {
+                id: Number(updateable.id)
+            },
+            data: {
+                token: token
+            }
+        });
+    }
+
     let emailString = fs.readFileSync(path.resolve(__dirname, '../../mails/forgot-password.html'), 'utf8')
-        .replace(':link', `${process.env.APP_URL_FRONTEND}/reset-password?token=${user.id}`)
+        .replace(':link', `${process.env.APP_URL_FRONTEND}/reset-password?token=${token}`)
 
     const mailData = {
         from: process.env.MAIL_FROM_ADDRESS,
@@ -87,4 +125,44 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     // Send email with reset password link
     return dataResponseJson(res, {}, "Reset password link sent to your email");
+}
+
+export const resetPassword = async (req: Request, res: Response) => {
+    const { token, email, password } = req.body;
+    const user = await prisma.user.findFirst({
+        where: {
+            email: email
+        },
+    })
+    if (!user) return errorResponseJson(res, [], 'Data not found', 400);
+
+    const resetToken = await prisma.resetPasswordToken.findFirst({
+        where: {
+            token: token,
+            model: 'users',
+            model_id: user.id
+        }
+    })
+    if (!resetToken) return errorResponseJson(res, [], 'Token not found', 400);
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return errorResponseJson(res, {}, "Invalid credentials", 400);
+
+    const hashedPassword = await hashPassword(password);
+    await prisma.user.update({
+        where: {
+            email: email
+        },
+        data: {
+            password: hashedPassword
+        }
+    });
+
+    await prisma.resetPasswordToken.delete({
+        where: {
+            id: resetToken.id
+        }
+    })
+
+    return dataResponseJson(res, {}, "Password reset successfully");
 }

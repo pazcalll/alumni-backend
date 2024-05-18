@@ -1,4 +1,4 @@
-import { login as userLogin, register, forgotPassword } from '../controllers/user/authentication';
+import { login as userLogin, register, forgotPassword, resetPassword } from '../controllers/user/authentication';
 import { registerValidation } from '../requests/user/registration';
 import { validate } from '../utils/helper';
 import RouteGroup from 'express-route-grouping';
@@ -7,6 +7,7 @@ import { login as adminLogin } from '../controllers/admin/authentication';
 import { verifyToken } from '../middlewares/token-verification';
 import { approveRegistration, registrationRequests } from '../controllers/admin/user';
 import { forgotPasswordValidation as userForgotPasswordValidation } from '../requests/user/forgot-password';
+import { resetPasswordValidation } from '../requests/user/reset-password';
 
 const root = new RouteGroup();
 
@@ -14,6 +15,7 @@ root.group('/user', route => {
     route.post('/registration', registerValidation, validate, register);
     route.post('/login', loginValidation, validate, userLogin);
     route.post('/forgot-password', userForgotPasswordValidation, validate, forgotPassword);
+    route.post('/reset-password', resetPasswordValidation, validate, resetPassword);
 });
 
 root.group('/admin', adminRoute => {

@@ -137,3 +137,12 @@ export const xssProtection = (req: Request, res: Response, next: NextFunction) =
 
 	next();
 }
+
+export const generateRandomString = (length: number) => {
+	let result = '';
+	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	for (let i = 0; i < length; i++) {
+		result += characters.charAt(Math.floor(Math.random() * characters.length));
+	}
+	return result;
+}
