@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { dataResponseJson, errorResponseJson, generateRandomString, hashPassword } from "../../utils/helper";
+import { dataResponseJson, errorResponseJson, generateRandomString, hashPassword, keyToCamelCase } from "../../utils/helper";
 import { PrismaClient } from '@prisma/client'
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -7,6 +7,8 @@ import { userFields } from "../../utils/model-fields";
 import { transporter } from "../../utils/mail";
 import fs from 'fs';
 import path from 'path';
+import 'dotenv/config';
+import { userUpdateable } from "../../utils/model-updateable-fields";
 
 const prisma = new PrismaClient();
 
@@ -37,13 +39,36 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const register = async (req: Request, res: Response) => {
-    const { name, email, password } = req.body;
+    const {
+        name,
+        email,
+        password,
+        major_id: majorId,
+        graduation_date: graduationDate,
+        address,
+        mobile,
+        lat,
+        long
+    } = req.body;
+
+    console.log(req.body.major_id);
+
     const hashedPassword = await hashPassword(password);
     const user = await prisma.user.create({
         data: {
             name: name,
             email: email,
-            password: hashedPassword
+            password: hashedPassword,
+            userDetail: {
+                create: {
+                    major_id: Number(majorId),
+                    graduation_date: new Date(graduationDate).toISOString(),
+                    address: address,
+                    mobile: mobile,
+                    lat: lat,
+                    long: long
+                }
+            }
         },
     });
 
@@ -114,11 +139,12 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     let emailString = fs.readFileSync(path.resolve(__dirname, '../../mails/forgot-password.html'), 'utf8')
         .replace(':link', `${process.env.APP_URL_FRONTEND}/reset-password?token=${token}`)
+        .replace(':token', token);
 
     const mailData = {
         from: process.env.MAIL_FROM_ADDRESS,
         to: user.email,
-        subject: 'Reset Password Link',
+        subject: String(process.env.APP_NAME)+' | Reset Password Link',
         html:  emailString,
     };
     transporter.sendMail(mailData).catch((err) => console.log('error', err))
@@ -165,4 +191,57 @@ export const resetPassword = async (req: Request, res: Response) => {
     })
 
     return dataResponseJson(res, {}, "Password reset successfully");
+}
+
+export const updateProfile = async (req: Request, res: Response) => {
+    const {
+        name,
+        email,
+        password,
+        major_id: majorId,
+        graduation_date: graduationDate,
+        address,
+        mobile,
+        lat,
+        long
+    } = req.body;
+
+    const user = await prisma.user.findFirst({
+        where: {
+            id: Number(req.params.id)
+        }
+    })
+
+    if (!user) return errorResponseJson(res, [], 'Data not found', 400);
+
+    let updateData: userUpdateable = {
+        name: name,
+        email: email,
+        userDetail: {
+            update: {
+                major_id: Number(majorId),
+                graduation_date: new Date(graduationDate).toISOString(),
+                address: address,
+                mobile: mobile,
+                lat: lat,
+                long: long
+            }
+        }
+    }
+
+    if (password) {
+        const hashedPassword = await hashPassword(password);
+        updateData.password = hashedPassword;
+    }
+
+    const update = await prisma.user.update({
+        where: {
+            id: Number(req.params.id)
+        },
+        data: updateData
+    });
+
+    console.log(update);
+
+    return dataResponseJson(res, {}, "User updated successfully");
 }

@@ -146,3 +146,9 @@ export const generateRandomString = (length: number) => {
 	}
 	return result;
 }
+
+export const keyToCamelCase = (key: String): string => {
+	return key.replace(/([-_][a-z])/g, (group) => group.toUpperCase()
+		.replace('-', '')
+		.replace('_', ''));
+}
