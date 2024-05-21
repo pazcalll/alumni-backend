@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Tue May 21 2024 22:53:35 GMT+0700 (Western Indonesia Time)✨
+//🧩Don't Edit this file.✨Generated in Tue May 21 2024 23:06:21 GMT+0700 (Western Indonesia Time)✨
 
 generator client {
   provider = "prisma-client-js"
@@ -59,6 +59,7 @@ model UserDetail {
   user_id         Int      @unique
   major           Major    @relation(fields: [major_id], references: [id])
   major_id        Int
+  image_url       String?
   mobile          String
   graduation_date DateTime
   address         String

@@ -9,6 +9,7 @@ import { approveRegistration, registrationRequests } from '../controllers/admin/
 import { forgotPasswordValidation as userForgotPasswordValidation } from '../requests/user/forgot-password';
 import { resetPasswordValidation } from '../requests/user/reset-password';
 import { updateProfileValidation } from '../requests/user/update-profile';
+import { approvedUsers } from '../middlewares/verified-users';
 
 const root = new RouteGroup();
 
@@ -18,7 +19,10 @@ root.group('/user', route => {
     route.post('/forgot-password', userForgotPasswordValidation, validate, forgotPassword);
     route.post('/reset-password', resetPasswordValidation, validate, resetPassword);
 
-    route.put('/:id?', updateProfileValidation, validate, updateProfile);
+    route.group('/', userRoute => {
+        userRoute.use('/', approvedUsers);
+        userRoute.put('/:id?', updateProfileValidation, validate, updateProfile);
+    })
 });
 
 root.group('/admin', adminRoute => {

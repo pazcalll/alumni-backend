@@ -4,6 +4,7 @@ model UserDetail {
   user_id         Int      @unique
   major           Major    @relation(fields: [major_id], references: [id])
   major_id        Int
+  image_url       String?
   mobile          String
   graduation_date DateTime
   address         String
