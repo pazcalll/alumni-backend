@@ -8,7 +8,7 @@ export const userFields = {
         name: true,
         created_at: true,
         updated_at: true,
-        is_approved: true
+        approved_at: true
     }
 }
 

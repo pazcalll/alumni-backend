@@ -5,7 +5,7 @@ import { xssProtection } from './utils/helper';
 
 const app = express();
 const port = process.env.PORT || 3000;
-const upload = multer();
+const upload = multer({dest: 'storage/'});
 
 app.use(express.urlencoded({extended: true}));
 app.use(upload.any());

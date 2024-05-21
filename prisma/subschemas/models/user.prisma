@@ -3,7 +3,7 @@ model User {
   email       String      @unique
   name        String
   password    String
-  is_approved Boolean     @default(false)
+  approved_at DateTime?
   created_at  DateTime    @default(now())
   updated_at  DateTime    @default(now())
   userDetail  UserDetail?

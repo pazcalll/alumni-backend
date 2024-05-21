@@ -9,7 +9,7 @@ export const registrationRequests = async (req: Request, res: Response) => {
     let requests = await prisma.user.findMany({
         ...prismaPagination(Number(req.query.page), Number(req.query.limit)),
         where: {
-            is_approved: false,
+            approved_at: null,
         }
     });
 
@@ -25,7 +25,7 @@ export const approveRegistration = async (req: Request, res: Response) => {
             id: id
         },
         data: {
-            is_approved: true
+            approved_at: new Date().toISOString()
         },
         ...userFields
     });

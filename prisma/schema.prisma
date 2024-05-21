@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Sat May 18 2024 17:46:29 GMT+0700 (Western Indonesia Time)✨
+//🧩Don't Edit this file.✨Generated in Tue May 21 2024 22:53:35 GMT+0700 (Western Indonesia Time)✨
 
 generator client {
   provider = "prisma-client-js"
@@ -45,7 +45,7 @@ model User {
   email       String      @unique
   name        String
   password    String
-  is_approved Boolean     @default(false)
+  approved_at DateTime?
   created_at  DateTime    @default(now())
   updated_at  DateTime    @default(now())
   userDetail  UserDetail?
