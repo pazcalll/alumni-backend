@@ -32,3 +32,16 @@ export const approveRegistration = async (req: Request, res: Response) => {
 
     return dataResponseJson(res, user, "User approved successfully");
 }
+
+export const userList = async (req: Request, res: Response) => {
+    let requests = await prisma.user.findMany({
+        ...prismaPagination(Number(req.query.page), Number(req.query.limit)),
+        where: {
+            approved_at: {
+                not: null
+            },
+        }
+    });
+
+    return dataResponsePagination(res, requests, Number(req.query.page), Number(req.query.limit));
+}

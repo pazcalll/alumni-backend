@@ -5,7 +5,7 @@ import RouteGroup from 'express-route-grouping';
 import { loginValidation } from '../requests/login';
 import { login as adminLogin } from '../controllers/admin/authentication';
 import { verifyToken } from '../middlewares/token-verification';
-import { approveRegistration, registrationRequests } from '../controllers/admin/user';
+import { approveRegistration, registrationRequests, userList } from '../controllers/admin/user';
 import { forgotPasswordValidation as userForgotPasswordValidation } from '../requests/user/forgot-password';
 import { resetPasswordValidation } from '../requests/user/reset-password';
 import { updateProfileValidation } from '../requests/user/update-profile';
@@ -30,6 +30,7 @@ root.group('/admin', adminRoute => {
 
     adminRoute.group('/user', adminUserRoute => {
         adminUserRoute.use('/', verifyToken);
+        adminUserRoute.get('/user-list', userList);
         adminUserRoute.get('/requests', registrationRequests);
         adminUserRoute.put('/approve-user-registration/:id?', approveRegistration);
     })
