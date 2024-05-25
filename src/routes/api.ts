@@ -10,6 +10,7 @@ import { forgotPasswordValidation as userForgotPasswordValidation } from '../req
 import { resetPasswordValidation } from '../requests/user/reset-password';
 import { updateProfileValidation } from '../requests/user/update-profile';
 import { approvedUsers } from '../middlewares/verified-users';
+import { isAdmin } from '../middlewares/is-admin';
 
 const root = new RouteGroup();
 
@@ -26,6 +27,7 @@ root.group('/user', route => {
 });
 
 root.group('/admin', adminRoute => {
+    adminRoute.use('/', isAdmin)
     adminRoute.post('/login', loginValidation, validate, adminLogin);
 
     adminRoute.group('/user', adminUserRoute => {
