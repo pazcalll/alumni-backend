@@ -21,7 +21,7 @@ root.group('/user', route => {
 
     route.group('/', userRoute => {
         userRoute.use('/', approvedUsers);
-        userRoute.put('/:id?', updateProfileValidation, validate, updateProfile);
+        userRoute.put('/update', updateProfileValidation, validate, updateProfile);
     })
 });
 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { dataResponseJson, errorResponseJson, generateRandomString, hashPassword, keyToCamelCase } from "../../utils/helper";
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, User } from '@prisma/client'
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { userFields } from "../../utils/model-fields";
@@ -9,6 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import 'dotenv/config';
 import { userUpdateable } from "../../utils/model-updateable-fields";
+import multer from "multer";
 
 const prisma = new PrismaClient();
 
@@ -193,38 +194,55 @@ export const resetPassword = async (req: Request, res: Response) => {
     return dataResponseJson(res, {}, "Password reset successfully");
 }
 
-export const updateProfile = async (req: Request, res: Response) => {
+export const updateProfile = async (req: any, res: Response) => {
+    const storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, 'storage/')
+        },
+        filename: function (req, file, cb) {
+            cb(null, file.fieldname + '-' + Date.now() + '.' + file.mimetype.split('/')[1])
+        }
+    });
+
+    let userImage = '';
+    const upload = multer({ storage: storage }).single('image_url')
+
+    let user: User | any;
+    let body: any;
+
+    await new Promise((resolve, reject) => {
+        upload(req, res, (err) => {
+            user = req.user
+            body = req.body
+            if (err) {
+                reject(err);
+            } else {
+                userImage = req.file ? req.file.filename : '';
+                resolve(userImage);
+            }
+        });
+    })
+
     const {
         name,
-        email,
         password,
-        major_id: majorId,
         graduation_date: graduationDate,
         address,
         mobile,
         lat,
         long
-    } = req.body;
-
-    const user = await prisma.user.findFirst({
-        where: {
-            id: Number(req.params.id)
-        }
-    })
-
-    if (!user) return errorResponseJson(res, [], 'Data not found', 400);
+    } = body;
 
     let updateData: userUpdateable = {
         name: name,
-        email: email,
         userDetail: {
             update: {
-                major_id: Number(majorId),
                 graduation_date: new Date(graduationDate).toISOString(),
                 address: address,
                 mobile: mobile,
                 lat: lat,
-                long: long
+                long: long,
+                image_url:userImage
             }
         }
     }
@@ -236,12 +254,10 @@ export const updateProfile = async (req: Request, res: Response) => {
 
     const update = await prisma.user.update({
         where: {
-            id: Number(req.params.id)
+            id: user.id
         },
         data: updateData
     });
-
-    console.log(update);
 
     return dataResponseJson(res, {}, "User updated successfully");
 }
