@@ -39,7 +39,10 @@ export const login = async (req: Request, res: Response) => {
     return dataResponseJson(res, data, "Login successful", 200);
 }
 
-export const register = async (req: Request, res: Response) => {
+interface RegisterRequest extends Request {
+    files?: any;
+}
+export const register = async (req: RegisterRequest, res: Response) => {
     const {
         name,
         email,
@@ -51,31 +54,9 @@ export const register = async (req: Request, res: Response) => {
         long
     } = req.body;
 
-    // const storage = multer.diskStorage({
-    //     destination: function (req, file, cb) {
-    //         cb(null, 'storage/')
-    //     },
-    //     filename: function (req, file, cb) {
-    //         cb(null, file.fieldname + '-' + Date.now() + '.' + file.mimetype.split('/')[1])
-    //     }
-    // });
-
-    // let userImage = '';
-    // const upload = multer({ storage: storage }).single('image_url')
-
-    // let body: any;
-
-    // await new Promise((resolve, reject) => {
-    //     upload(req, res, (err) => {
-    //         body = req.body
-    //         if (err) {
-    //             reject(err);
-    //         } else {
-    //             userImage = req.file ? req.file.filename : '';
-    //             resolve(userImage);
-    //         }
-    //     });
-    // })
+    const userImage = req.files[0];
+    const filename = userImage.fieldname + '-' + Date.now() + '.' + userImage.mimetype.split('/')[1];
+    fs.writeFileSync(`storage/${filename}`, userImage.buffer);
 
     const hashedPassword = await hashPassword(password);
     const user = await prisma.user.create({
@@ -85,7 +66,8 @@ export const register = async (req: Request, res: Response) => {
             password: hashedPassword,
             userDetail: {
                 create: {
-                    graduation_year: graduation_year,
+                    image_url: filename,
+                    graduation_year: Number(graduation_year),
                     address: address,
                     mobile: mobile,
                     lat: lat,
@@ -217,33 +199,33 @@ export const resetPassword = async (req: Request, res: Response) => {
 }
 
 export const updateProfile = async (req: any, res: Response) => {
-    const storage = multer.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, 'storage/')
-        },
-        filename: function (req, file, cb) {
-            cb(null, file.fieldname + '-' + Date.now() + '.' + file.mimetype.split('/')[1])
-        }
-    });
+    // const storage = multer.diskStorage({
+    //     destination: function (req, file, cb) {
+    //         cb(null, 'storage/')
+    //     },
+    //     filename: function (req, file, cb) {
+    //         cb(null, file.fieldname + '-' + Date.now() + '.' + file.mimetype.split('/')[1])
+    //     }
+    // });
 
-    let userImage = '';
-    const upload = multer({ storage: storage }).single('image_url')
+    // let userImage = '';
+    // const upload = multer({ storage: storage }).single('image_url')
 
-    let user: User | any;
-    let body: any;
+    // let user: User | any;
+    // let body: any;
 
-    await new Promise((resolve, reject) => {
-        upload(req, res, (err) => {
-            user = req.user
-            body = req.body
-            if (err) {
-                reject(err);
-            } else {
-                userImage = req.file ? req.file.filename : '';
-                resolve(userImage);
-            }
-        });
-    })
+    // await new Promise((resolve, reject) => {
+    //     upload(req, res, (err) => {
+    //         user = req.user
+    //         body = req.body
+    //         if (err) {
+    //             reject(err);
+    //         } else {
+    //             userImage = req.file ? req.file.filename : '';
+    //             resolve(userImage);
+    //         }
+    //     });
+    // })
 
     const {
         name,
@@ -253,18 +235,24 @@ export const updateProfile = async (req: any, res: Response) => {
         mobile,
         lat,
         long
-    } = body;
+    } = req.body;
+
+    const user = req.user;
+
+    const userImage = req.files[0];
+    const filename = userImage.fieldname + '-' + Date.now() + '.' + userImage.mimetype.split('/')[1];
+    fs.writeFileSync(`storage/${filename}`, userImage.buffer);
 
     let updateData: userUpdateable = {
         name: name,
         userDetail: {
             update: {
-                graduation_year: graduation_year,
+                graduation_year: Number(graduation_year),
                 address: address,
                 mobile: mobile,
                 lat: lat,
                 long: long,
-                image_url:userImage
+                image_url:filename
             }
         }
     }

@@ -43,8 +43,8 @@ export const registerValidation = [
         .isNumeric().withMessage("Must be numeric")
         .custom((value) => {
             let now = new Date();
-            if (value <= now.getFullYear()) {
-                throw new Error('Graduation year must be greater than '+now.getFullYear());
+            if (value > now.getFullYear()) {
+                throw new Error('Graduation year must not be greater than '+now.getFullYear());
             }
             return true;
         }),
