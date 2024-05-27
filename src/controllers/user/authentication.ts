@@ -9,7 +9,6 @@ import fs from 'fs';
 import path from 'path';
 import 'dotenv/config';
 import { userUpdateable } from "../../utils/model-updateable-fields";
-import multer from "multer";
 
 const prisma = new PrismaClient();
 
@@ -108,7 +107,6 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     const isTokenExist = await prisma.resetPasswordToken.findFirst({
         where: {
-            token: token,
             model: 'users',
             model_id: user.id
         }
@@ -174,10 +172,8 @@ export const resetPassword = async (req: Request, res: Response) => {
             model_id: user.id
         }
     })
-    if (!resetToken) return errorResponseJson(res, [], 'Token not found', 400);
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return errorResponseJson(res, {}, "Invalid credentials", 400);
+    if (!resetToken) return errorResponseJson(res, [], 'Token not found', 400);
 
     const hashedPassword = await hashPassword(password);
     await prisma.user.update({
@@ -199,34 +195,6 @@ export const resetPassword = async (req: Request, res: Response) => {
 }
 
 export const updateProfile = async (req: any, res: Response) => {
-    // const storage = multer.diskStorage({
-    //     destination: function (req, file, cb) {
-    //         cb(null, 'storage/')
-    //     },
-    //     filename: function (req, file, cb) {
-    //         cb(null, file.fieldname + '-' + Date.now() + '.' + file.mimetype.split('/')[1])
-    //     }
-    // });
-
-    // let userImage = '';
-    // const upload = multer({ storage: storage }).single('image_url')
-
-    // let user: User | any;
-    // let body: any;
-
-    // await new Promise((resolve, reject) => {
-    //     upload(req, res, (err) => {
-    //         user = req.user
-    //         body = req.body
-    //         if (err) {
-    //             reject(err);
-    //         } else {
-    //             userImage = req.file ? req.file.filename : '';
-    //             resolve(userImage);
-    //         }
-    //     });
-    // })
-
     const {
         name,
         password,
