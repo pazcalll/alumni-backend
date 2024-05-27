@@ -1,4 +1,4 @@
-//🧩Don't Edit this file.✨Generated in Tue May 21 2024 23:06:21 GMT+0700 (Western Indonesia Time)✨
+//🧩Don't Edit this file.✨Generated in Mon May 27 2024 20:58:58 GMT+0700 (Western Indonesia Time)✨
 
 generator client {
   provider = "prisma-client-js"
@@ -18,17 +18,6 @@ model Admin {
   updated_at DateTime @default(now())
 
   @@map("admins")
-}
-
-model Major {
-  id         Int          @id @default(autoincrement())
-  name       String
-  degree     String
-  created_at DateTime     @default(now())
-  updated_at DateTime     @default(now())
-  userDetail UserDetail[]
-
-  @@map("majors")
 }
 
 model ResetPasswordToken {
@@ -57,11 +46,9 @@ model UserDetail {
   id              Int      @id @default(autoincrement())
   user            User     @relation(fields: [user_id], references: [id])
   user_id         Int      @unique
-  major           Major    @relation(fields: [major_id], references: [id])
-  major_id        Int
   image_url       String?
   mobile          String
-  graduation_date DateTime
+  graduation_year Int
   address         String
   lat             String
   long            String

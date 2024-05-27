@@ -21,10 +21,9 @@ export const seedUser = async () => {
         await prisma.userDetail.create({
             data: {
                 user_id: user.id,
-                major_id: 1,
                 address: "Jl. Jalan",
                 mobile: "08123456789",
-                graduation_date: new Date().toISOString(),
+                graduation_year: 2022,
                 lat: "-7.9546559",
                 long: "112.5303091",
             }

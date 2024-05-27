@@ -38,19 +38,16 @@ export const registerValidation = [
     body('address')
         .notEmpty().withMessage("Must not be empty"),
 
-    body('major_id')
-        .custom(async (value) => {
-            return await prisma.major.findFirst({ where: {id: Number(value)} })
-                .then((data) => {
-                    return data ? Promise.resolve() : Promise.reject('Major not found')
-               })
-        })
+    body('graduation_year')
         .notEmpty().withMessage("Must not be empty")
-        .isNumeric().withMessage("Must be numeric"),
-
-    body('graduation_date')
-        .notEmpty().withMessage("Must not be empty")
-        .isDate().withMessage("Must be date"),
+        .isNumeric().withMessage("Must be numeric")
+        .custom((value) => {
+            let now = new Date();
+            if (value <= now.getFullYear()) {
+                throw new Error('Graduation year must be greater than '+now.getFullYear());
+            }
+            return true;
+        }),
 
     body('lat')
         .isNumeric().withMessage("Must be numeric")

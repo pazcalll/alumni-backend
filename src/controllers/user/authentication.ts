@@ -44,15 +44,38 @@ export const register = async (req: Request, res: Response) => {
         name,
         email,
         password,
-        major_id: majorId,
-        graduation_date: graduationDate,
+        graduation_year,
         address,
         mobile,
         lat,
         long
     } = req.body;
 
-    console.log(req.body.major_id);
+    // const storage = multer.diskStorage({
+    //     destination: function (req, file, cb) {
+    //         cb(null, 'storage/')
+    //     },
+    //     filename: function (req, file, cb) {
+    //         cb(null, file.fieldname + '-' + Date.now() + '.' + file.mimetype.split('/')[1])
+    //     }
+    // });
+
+    // let userImage = '';
+    // const upload = multer({ storage: storage }).single('image_url')
+
+    // let body: any;
+
+    // await new Promise((resolve, reject) => {
+    //     upload(req, res, (err) => {
+    //         body = req.body
+    //         if (err) {
+    //             reject(err);
+    //         } else {
+    //             userImage = req.file ? req.file.filename : '';
+    //             resolve(userImage);
+    //         }
+    //     });
+    // })
 
     const hashedPassword = await hashPassword(password);
     const user = await prisma.user.create({
@@ -62,8 +85,7 @@ export const register = async (req: Request, res: Response) => {
             password: hashedPassword,
             userDetail: {
                 create: {
-                    major_id: Number(majorId),
-                    graduation_date: new Date(graduationDate).toISOString(),
+                    graduation_year: graduation_year,
                     address: address,
                     mobile: mobile,
                     lat: lat,
@@ -226,7 +248,7 @@ export const updateProfile = async (req: any, res: Response) => {
     const {
         name,
         password,
-        graduation_date: graduationDate,
+        graduation_year,
         address,
         mobile,
         lat,
@@ -237,7 +259,7 @@ export const updateProfile = async (req: any, res: Response) => {
         name: name,
         userDetail: {
             update: {
-                graduation_date: new Date(graduationDate).toISOString(),
+                graduation_year: graduation_year,
                 address: address,
                 mobile: mobile,
                 lat: lat,
