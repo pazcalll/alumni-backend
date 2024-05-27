@@ -4,6 +4,7 @@ import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import { Admin, User } from '@prisma/client';
+import { url } from 'inspector';
 
 export const hashPassword = async (password: string) => {
 	const saltRounds = 10;
@@ -79,7 +80,7 @@ export const dataResponseArray = (
 
 export const dataResponseJson = (
 	res: Response,
-	data: object = {},
+	data: any = {},
 	message: string = "",
 	status: number = 200
 ): Response => {

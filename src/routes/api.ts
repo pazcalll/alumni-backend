@@ -1,4 +1,4 @@
-import { login as userLogin, register, forgotPassword, resetPassword, updateProfile } from '../controllers/user/authentication';
+import { login as userLogin, register, forgotPassword, resetPassword } from '../controllers/user/authentication';
 import { registerValidation } from '../requests/user/registration';
 import { validate } from '../utils/helper';
 import RouteGroup from 'express-route-grouping';
@@ -12,6 +12,7 @@ import { updateProfileValidation } from '../requests/user/update-profile';
 import { approvedUsers } from '../middlewares/verified-users';
 import { isAdmin } from '../middlewares/is-admin';
 import multer from 'multer';
+import { getProfile, updateProfile } from '../controllers/user/user';
 
 const root = new RouteGroup();
 const upload = multer();
@@ -25,6 +26,7 @@ root.group('/user', route => {
 
     route.group('/', userRoute => {
         userRoute.use('/', approvedUsers);
+        userRoute.get('/', getProfile)
         userRoute.put('/update', formData, updateProfileValidation, validate, updateProfile);
     })
 });
