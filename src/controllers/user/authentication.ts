@@ -53,9 +53,9 @@ export const register = async (req: RegisterRequest, res: Response) => {
         long
     } = req.body;
 
-    const userImage = req.files[0];
-    const filename = userImage.fieldname + '-' + Date.now() + '.' + userImage.mimetype.split('/')[1];
-    fs.writeFileSync(`storage/${filename}`, userImage.buffer);
+    // const userImage = req.files[0];
+    // const filename = userImage.fieldname + '-' + Date.now() + '.' + userImage.mimetype.split('/')[1];
+    // fs.writeFileSync(`storage/${filename}`, userImage.buffer);
 
     const hashedPassword = await hashPassword(password);
     const user = await prisma.user.create({
@@ -65,7 +65,7 @@ export const register = async (req: RegisterRequest, res: Response) => {
             password: hashedPassword,
             userDetail: {
                 create: {
-                    image_url: filename,
+                    // image_url: filename,
                     graduation_year: Number(graduation_year),
                     address: address,
                     mobile: mobile,

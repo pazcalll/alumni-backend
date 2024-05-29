@@ -56,4 +56,7 @@ export const registerValidation = [
     body('long')
         .isNumeric().withMessage("Must be numeric")
         .notEmpty().withMessage("Must not be empty"),
+
+    // body('image_url')
+    //     .optional(),
 ]
