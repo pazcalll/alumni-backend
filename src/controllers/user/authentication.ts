@@ -26,11 +26,11 @@ export const login = async (req: Request, res: Response) => {
 
     const { password: _, ...userWithoutPassword } = user;
 
-    const accessToken = jwt.sign(user, process.env.JWT_SECRET || "", { expiresIn: 3600 });
+    const accessToken = jwt.sign(user, process.env.JWT_SECRET || "");
     const data = {
         ...userWithoutPassword,
         token: {
-            "expires_in": 3600,
+            // "expires_in": 3600,
             "access_token": accessToken
         }
     }
@@ -81,11 +81,11 @@ export const register = async (req: RegisterRequest, res: Response) => {
 
     const { password: _, ...userWithoutPassword } = user;
 
-    const accessToken = jwt.sign(user, process.env.JWT_SECRET || "", { expiresIn: 3600 });
+    const accessToken = jwt.sign(user, process.env.JWT_SECRET || "");
     const data = {
         ...userWithoutPassword,
         token: {
-            "expires_in": 3600,
+            // "expires_in": 3600,
             "access_token": accessToken
         }
     }
