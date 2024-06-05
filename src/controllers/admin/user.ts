@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { dataResponseJson, dataResponsePagination, prismaPagination } from "../../utils/helper";
 import { userFields } from "../../utils/model-fields";
+import fs from 'fs';
 
 const prisma = new PrismaClient();
 
@@ -44,4 +45,37 @@ export const userList = async (req: Request, res: Response) => {
     });
 
     return dataResponsePagination(res, requests, Number(req.query.page), Number(req.query.limit));
+}
+
+export const rejectRegistration = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    if (!id) return dataResponseJson(res, {}, "Invalid user id", 400);
+
+    let data = await prisma.user.findFirst({
+        where: {
+            id: id
+        },
+        select: {
+            userDetail: true
+        }
+    });
+
+    if (!data) return dataResponseJson(res, {}, "User not found", 404);
+
+    const filePath = `storage/${data?.userDetail?.image_url}`;
+    fs.unlinkSync(filePath);
+
+    await prisma.userDetail.delete({
+        where: {
+            user_id: id
+        }
+    });
+
+    let user = await prisma.user.delete({
+        where: {
+            id: id
+        }
+    });
+
+    return dataResponseJson(res, user, "User has been rejected and removed successfully");
 }
