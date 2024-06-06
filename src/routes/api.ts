@@ -3,7 +3,7 @@ import { registerValidation } from '../requests/user/registration';
 import { validate } from '../utils/helper';
 import RouteGroup from 'express-route-grouping';
 import { loginValidation } from '../requests/login';
-import { login as adminLogin } from '../controllers/admin/authentication';
+import { login as adminLogin, profile } from '../controllers/admin/authentication';
 import { verifyToken } from '../middlewares/token-verification';
 import { approveRegistration, registrationRequests, rejectRegistration, userList } from '../controllers/admin/user';
 import { forgotPasswordValidation as userForgotPasswordValidation } from '../requests/user/forgot-password';
@@ -33,6 +33,7 @@ root.group('/user', route => {
 
 root.group('/admin', adminRoute => {
     adminRoute.post('/login', loginValidation, validate, adminLogin);
+    adminRoute.get('/profile', verifyToken, isAdmin, profile);
 
     adminRoute.group('/user', adminUserRoute => {
         adminUserRoute.use('/', verifyToken, isAdmin);

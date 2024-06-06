@@ -34,3 +34,12 @@ export const login = async (req: Request, res: Response) => {
 
     return dataResponseJson(res, data, "Login successful", 200);
 }
+
+interface AdminProfileRequest extends Request {
+    user?: any
+}
+export const profile = async (req: AdminProfileRequest, res: Response) => {
+    const { password: _, ...adminWithoutPassword } = req.user;
+
+    return dataResponseJson(res, adminWithoutPassword, "Data found", 200);
+}
