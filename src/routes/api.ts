@@ -5,7 +5,7 @@ import RouteGroup from 'express-route-grouping';
 import { loginValidation } from '../requests/login';
 import { login as adminLogin, profile } from '../controllers/admin/authentication';
 import { verifyToken } from '../middlewares/token-verification';
-import { approveRegistration, registrationRequests, rejectRegistration, userList } from '../controllers/admin/user';
+import { approveRegistration, registrationRequests, rejectRegistration } from '../controllers/admin/user';
 import { forgotPasswordValidation as userForgotPasswordValidation } from '../requests/user/forgot-password';
 import { resetPasswordValidation } from '../requests/user/reset-password';
 import { updateProfileValidation } from '../requests/user/update-profile';
@@ -13,10 +13,16 @@ import { approvedUsers } from '../middlewares/verified-users';
 import { isAdmin } from '../middlewares/is-admin';
 import multer from 'multer';
 import { getProfile, updateProfile } from '../controllers/user/user';
+import { userList } from '../controllers/authenticated';
 
 const root = new RouteGroup();
 const upload = multer();
 const formData = upload.any();
+
+root.group('/', route => {
+    route.use('/', verifyToken);
+    route.get('/user/list', userList);
+})
 
 root.group('/user', route => {
     route.post('/registration', formData, registerValidation, validate, register);

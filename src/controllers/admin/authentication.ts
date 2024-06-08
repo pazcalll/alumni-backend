@@ -23,11 +23,10 @@ export const login = async (req: Request, res: Response) => {
 
     const { password: _, ...adminWithoutPassword } = admin;
 
-    const accessToken = jwt.sign(admin, process.env.JWT_SECRET || "", { expiresIn: 3600 });
+    const accessToken = jwt.sign(admin, process.env.JWT_SECRET || "");
     const data = {
         ...adminWithoutPassword,
         token: {
-            "expires_in": 3600,
             "access_token": accessToken
         }
     }
