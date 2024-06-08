@@ -148,8 +148,25 @@ export const generateRandomString = (length: number) => {
 	return result;
 }
 
-export const keyToCamelCase = (key: String): string => {
-	return key.replace(/([-_][a-z])/g, (group) => group.toUpperCase()
-		.replace('-', '')
-		.replace('_', ''));
+interface GenericUser extends User {
+	userDetail?: any;
+}
+export const usersSnakeCase = (users: GenericUser[]) => {
+	const modifiedUsers = users.map(user => {
+		const { userDetail, ...rest } = user;
+		return {
+			...rest,
+			user_detail: userDetail // Assuming userDetail is an object or value you want to keep as is but rename the key
+		};
+	});
+
+	return modifiedUsers;
+}
+
+export const userSnakeCase = (user: GenericUser) => {
+	const { userDetail, ...rest } = user;
+	return {
+		...rest,
+		user_detail: userDetail // Assuming userDetail is an object or value you want to keep as is but rename the key
+	};
 }

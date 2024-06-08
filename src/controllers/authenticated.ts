@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { dataResponseJson, prismaPagination } from "../utils/helper";
+import { dataResponseJson, prismaPagination, usersSnakeCase } from "../utils/helper";
 import { Response } from "express";
 import { userFields } from "../utils/model-fields";
 
@@ -23,7 +23,8 @@ export const userList = async (req: any, res: Response) => {
         dbQuery = { ...dbQuery, ...pagination };
     }
 
-    const users = await prisma.user.findMany(dbQuery);
+    let users = await prisma.user.findMany(dbQuery);
+    const toSnakeCase = usersSnakeCase(users);
 
-    return dataResponseJson(res, users, "Data found", 200);
+    return dataResponseJson(res, toSnakeCase, "Data found", 200);
 }

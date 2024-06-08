@@ -1,7 +1,7 @@
 import { Response } from "express";
 import fs from 'fs';
 import { userUpdateable } from "../../utils/model-updateable-fields";
-import { dataResponseJson, hashPassword } from "../../utils/helper";
+import { dataResponseJson, hashPassword, userSnakeCase, usersSnakeCase } from "../../utils/helper";
 import { PrismaClient } from "@prisma/client";
 import { userFields } from "../../utils/model-fields";
 
@@ -69,5 +69,10 @@ export const getProfile = async (req: any, res: Response) => {
         profile.userDetail.image_url = req.protocol+'://'+req.get('host')+'/'+profile?.userDetail?.image_url;
     }
 
-    return dataResponseJson(res, profile, "User profile");
+    let toSnakeCase = () => {
+        if (!profile) return profile;
+        return userSnakeCase(profile)
+    };
+
+    return dataResponseJson(res, toSnakeCase(), "User profile");
 }

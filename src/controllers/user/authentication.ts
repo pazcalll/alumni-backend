@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { dataResponseJson, errorResponseJson, generateRandomString, hashPassword, keyToCamelCase } from "../../utils/helper";
+import { dataResponseJson, errorResponseJson, generateRandomString, hashPassword } from "../../utils/helper";
 import { PrismaClient, User } from '@prisma/client'
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
