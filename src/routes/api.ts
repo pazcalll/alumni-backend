@@ -30,7 +30,7 @@ root.group('/user', route => {
     route.post('/forgot-password', userForgotPasswordValidation, validate, forgotPassword);
     route.post('/reset-password', resetPasswordValidation, validate, resetPassword);
 
-    route.group('/', userRoute => {
+    route.group('/profile', userRoute => {
         userRoute.use('/', approvedUsers);
         userRoute.get('/', getProfile)
         userRoute.put('/update', formData, updateProfileValidation, validate, updateProfile);
