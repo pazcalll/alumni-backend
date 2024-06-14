@@ -19,7 +19,7 @@ const root = new RouteGroup();
 const upload = multer();
 const formData = upload.any();
 
-root.group('/', route => {
+root.group('/authenticated', route => {
     route.use('/', verifyToken);
     route.get('/user/list', userList);
 })
