@@ -1,20 +1,34 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { dataResponseJson, dataResponsePagination, prismaPagination } from "../../utils/helper";
+import { dataResponseArray, dataResponseJson, dataResponsePagination, prismaPagination } from "../../utils/helper";
 import { userFields } from "../../utils/model-fields";
 import fs from 'fs';
 
 const prisma = new PrismaClient();
 
 export const registrationRequests = async (req: Request, res: Response) => {
-    let requests = await prisma.user.findMany({
-        ...prismaPagination(Number(req.query.page), Number(req.query.limit)),
+    let findManyJson = {
         where: {
             approved_at: null,
+        },
+        select: {
+            ...userFields.select,
+            userDetail: true
         }
-    });
+    };
 
-    return dataResponsePagination(res, requests, Number(req.query.page), Number(req.query.limit));
+    if (req.query.page && req.query.limit) {
+        findManyJson = {
+            ...findManyJson,
+            ...prismaPagination(Number(req.query.page), Number(req.query.limit))
+        };
+    }
+
+    let requests = await prisma.user.findMany(findManyJson);
+
+    return req.query.page && req.query.limit
+        ? dataResponsePagination(res, requests, Number(req.query.page), Number(req.query.limit))
+        : dataResponseArray(res, requests);
 }
 
 export const approveRegistration = async (req: Request, res: Response) => {
