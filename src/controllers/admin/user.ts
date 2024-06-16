@@ -49,16 +49,26 @@ export const approveRegistration = async (req: Request, res: Response) => {
 }
 
 export const userList = async (req: Request, res: Response) => {
-    let requests = await prisma.user.findMany({
-        ...prismaPagination(Number(req.query.page), Number(req.query.limit)),
+    let findManyJson = {
         where: {
             approved_at: {
                 not: null
             },
         }
-    });
+    };
 
-    return dataResponsePagination(res, requests, Number(req.query.page), Number(req.query.limit));
+    let requests = await prisma.user.findMany(findManyJson);
+
+    if (req.query.page && req.query.limit) {
+        findManyJson = {
+            ...findManyJson,
+            ...prismaPagination(Number(req.query.page), Number(req.query.limit))
+        };
+    }
+
+    return req.query.page && req.query.limit
+        ? dataResponsePagination(res, requests, Number(req.query.page), Number(req.query.limit))
+        : dataResponseArray(res, requests);
 }
 
 export const rejectRegistration = async (req: Request, res: Response) => {
