@@ -8,8 +8,6 @@ export const isAdmin = async (req: any, res: any, next: any) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    console.log(authHeader, token)
-
     if (token == null) return res.sendStatus(401);
 
     const secret = process.env.JWT_SECRET;
