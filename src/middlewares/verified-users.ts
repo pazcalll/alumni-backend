@@ -9,7 +9,7 @@ interface Request extends ExpressRequest {
 
 
 export const approvedUsers = (req: Request, res: Response, next: NextFunction) => {
-    const bearerHeader = req.headers.authorization;
+    const bearerHeader = req.body.headers.authorization;
     const token = bearerHeader && bearerHeader.split(' ')[1];
     if (!token) return errorResponseJson(res, {}, 'Unauthorized', 401);
 
