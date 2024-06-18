@@ -86,8 +86,8 @@ export const rejectRegistration = async (req: Request, res: Response) => {
 
     if (!data) return dataResponseJson(res, {}, "User not found", 404);
 
-    const filePath = `storage/${data?.userDetail?.image_url}`;
-    fs.unlinkSync(filePath);
+    // const filePath = `storage/${data?.userDetail?.image_url}`;
+    // fs.unlinkSync(filePath);
 
     await prisma.userDetail.delete({
         where: {
