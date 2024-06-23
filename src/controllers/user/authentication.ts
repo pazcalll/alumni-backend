@@ -141,8 +141,9 @@ export const forgotPassword = async (req: Request, res: Response) => {
     }
 
     let emailString = fs.readFileSync(path.resolve(__dirname, '../../mails/forgot-password.html'), 'utf8')
-        .replace(':link', `${process.env.APP_URL_FRONTEND}/reset-password?token=${token}`)
-        .replace(':token', token);
+        .replace(':link', `${process.env.APP_URL_FRONTEND}/verif-password?token=${token}`)
+        .replace(':token', token)
+        .replace(':email', user.email);
 
     const mailData = {
         from: process.env.MAIL_FROM_ADDRESS,
