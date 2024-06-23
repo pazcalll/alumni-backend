@@ -141,7 +141,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     }
 
     let emailString = fs.readFileSync(path.resolve(__dirname, '../../mails/forgot-password.html'), 'utf8')
-        .replace(':link', `${process.env.APP_URL_FRONTEND}/verif-password?token=${token}`)
+        .replace(':link', `${process.env.APP_URL_FRONTEND}/verif-password?token=${token}&email=${user.email}`)
         .replace(':token', token)
         .replace(':email', user.email);
 
